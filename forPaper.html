@@ -1,0 +1,867 @@
+<html>
+<head>
+	<script language="javascript">
+		fivebitdefault = ['a','b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',':', '{', '}', ' ' , ',', '"'];
+		sevenbitdefault = ['@', '£', '$', '¥', 'è', 'é', 'ù', 'ì', 'ò', 'Ç', '\n', 'Ø', 'ø', '\r','Å', 'å','\u0394', '_', '\u03a6', '\u0393', '\u039b', '\u03a9', '\u03a0','\u03a8', '\u03a3', '\u0398', '\u039e','€', 'Æ', 'æ', 'ß', 'É', ' ', '!', '"', '#', '¤', '%', '&', '\'', '(', ')','*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7','8', '9', ':', ';', '<', '=', '>', '?', '¡', 'A', 'B', 'C', 'D', 'E','F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S','T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Ä', 'Ö', 'Ñ', 'Ü', '§', '¿', 'a','b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'ä', 'ö', 'ñ','ü', 'à'];
+
+function binToInt(x)
+{
+	let total = 0;	
+	let power = parseInt(x.length)-1;	
+	for(let i=0;i<x.length;i++)
+	{
+		if(x.charAt(i) == '1')
+		{
+			total = total +Math.pow(2,power);
+		}
+		power --;
+	}
+	return total;
+}
+function intToBin(x,size)
+{
+	let base = 2;
+	let num = parseInt(x);
+	let bin = num.toString(base);
+	for(let i=bin.length;i<size;i++)
+	{
+		bin = "0" + bin;
+	}
+	return bin;
+}
+
+function HexToNum(numberS) 
+{
+	let tens = MakeNum(numberS.substring(0,1));
+	
+	let ones = 0;
+	if(numberS.length > 1) 
+		ones=MakeNum(numberS.substring(1,2));
+	if(ones == 'X') 
+	{
+		return "00";
+	}
+	return  (tens * 16) + (ones * 1);
+}
+
+function MakeNum(str) 
+{
+	if((str >= '0') && (str <= '9'))
+		return str;
+	switch(str.toUpperCase()) 
+	{
+		case "A": return 10;
+		case "B": return 11;
+		case "C": return 12;
+		case "D": return 13;
+		case "E": return 14;
+		case "F": return 15;
+		default:
+		return 16;
+	}
+	return 16;
+}
+
+function intToHex(i) 
+{
+	let sHex = "0123456789ABCDEF";	
+	h = ""; 
+	i = parseInt(i);	
+	for(j = 0; j <= 3; j++)
+	{
+		h += sHex.charAt((i >> (j * 8 + 4)) & 0x0F) +
+		sHex.charAt((i >> (j * 8)) & 0x0F);
+	}
+  return h.substring(0,2);
+}
+function ToHex(i)
+{
+	let sHex = "0123456789ABCDEF";
+	let Out = "";
+	Out = sHex.charAt(i&0xf);
+	i>>=4;
+	Out = sHex.charAt(i&0xf) + Out;
+	return Out;
+}
+function getSevenBit(character) 
+{
+	//use for-loop instead of indexOf for performance issue 
+	for(let i=0;i<sevenbitdefault.length;i++)
+	{
+		if(sevenbitdefault[i] == character)
+		{
+			return i;
+		}
+	}
+	alert("Failed validation, No 7 bit char for " + character);
+	return 0;
+}
+
+function phoneNumberMap(character)
+{
+
+if((character >= '0') && (character <= '9'))
+{
+	return character;
+}
+switch(character.toUpperCase())
+{
+	case '*':
+	return 'A';
+	case '#':
+	return 'B';
+	case 'A':
+	return 'C';
+	case 'B':
+	return 'D';
+	case 'C':
+	return 'E';
+//		case '+':
+//			return '+'; // An exception to fit with current processing ...
+default:
+return 'F';
+}
+return 'F';
+}
+function phoneNumberUnMap(chararacter)
+{
+	if((chararacter >= '0') && (chararacter <= '9'))
+	{
+		return chararacter;
+	}
+	switch(chararacter)
+	{
+		case 10: return '*';
+		case 11: return '#';
+		case 12: return 'A';
+		case 13: return 'B';
+		case 14: return 'C';
+		default:
+		return 'F';
+	}
+	return 'F';
+}
+// function to convert semioctets to a string
+function adjustPhoneAddressToPDUFormat(inp) //sp
+{
+	let out = "";	
+	for(let i=0;i<inp.length;i=i+2)
+	{
+		let temp = inp.substring(i,i+2);	
+		out = out + phoneNumberMap(temp.charAt(1)) + phoneNumberMap(temp.charAt(0));
+	}
+	return out;
+}
+
+
+function NumberTo5BitTable(number){
+	switch(number) 
+	{
+		case "0": return "a";
+		case "1": return "b";
+		case "2": return "c";
+		case "3": return "d";
+		case "4": return "e";
+		case "5": return "f";
+		case "6": return "g";
+		case "7": return "h";
+		case "8": return "i";
+		case "9": return "j";
+		
+		case "[": return "l"; 
+		case "]": return "r";
+		case "-": return "m"; //m for muinus
+		case ".": return "p"; // p for point
+		case "," : return  ","  ;
+		default:
+		return "p";
+	}
+
+}
+function fiveBitTableToNumber (number){
+	switch(number) 
+	{
+		case "a": return "0" ;
+		case "b": return "1" ;
+		case "c": return "2" ;
+		case "d": return "3" ;
+		case "e": return "4" ;
+		case "f" : return "5" ;
+		case "g": return "6"  ;
+		case "h": return "7"  ;
+		case "i" : return "8" ;
+		case "j" : return "9" ;
+		
+		case "l"  : return  "["   ; 
+		case "r"  : return  "]"  ;
+		case "m": return  "-"  ; //m for muinus
+		case "p" : return  "."  ; // p for point
+		case "," : return  ","  ; // p for point
+		default:
+		return "{";
+	}
+
+}
+function objNumberTo5BitChar(obj){
+	let newObj = obj;
+	let  coordinatesString = JSON.stringify(newObj.geometry.coordinates), 
+	bboxString = JSON.stringify(newObj.bbox), 
+	newCoordinatesString = "", 
+	newBboxString = "";
+
+	for( let i = 0 ; i < coordinatesString.length ; i++){
+		newCoordinatesString += NumberTo5BitTable(coordinatesString[i] )
+	}
+	if(!!bboxString)
+		for( let i = 0 ; i < bboxString.length ; i++){
+			newBboxString += NumberTo5BitTable(bboxString[i] )
+			
+		}
+		newObj.geometry.coordinates = newCoordinatesString;
+		
+		if(!!bboxString) newObj.bbox = newBboxString;
+
+		//console.log( newCoordinatesString, newBboxString)
+		return newObj
+	}
+
+	function obj5BitCharToNumber(text){
+		//console.log("text: ", text);
+		let obj =  JSON.parse(text)
+		let newObj = obj;
+		let  coordinatesString = newObj.geometry.coordinates, 
+		bboxString = newObj.bbox, 
+		newCoordinatesString = "", 
+		newBboxString = "";
+		
+
+		if(coordinatesString)
+		{
+			for( let i = 0 ; i < coordinatesString.length ; i++){
+				newCoordinatesString += fiveBitTableToNumber(coordinatesString[i] )		
+			}
+			newObj.geometry.coordinates = JSON.parse(newCoordinatesString);
+		}
+		if(bboxString)
+		{
+			for( let i = 0 ; i < bboxString.length ; i++){
+				newBboxString += fiveBitTableToNumber(bboxString[i] )
+			}
+			newObj.bbox = JSON.parse(newBboxString);
+		}
+		newObj.type = capitalizeGeoJSONPropertyBack(newObj.type);
+		newObj.geometry.type = capitalizeGeoJSONPropertyBack(newObj.geometry.type);
+		return newObj
+	}
+	function capitalizeGeoJSONPropertyBack(text){
+		switch(text){
+		case "feature": return "Feature";
+		case "featurecollection": return "FeatureCollection";
+		case "point": return "Point";
+		case "multipoint": return "MultiPoint";
+		case "linestring": return "LineString";
+		case "multilinestring": return "MultiLineString";
+		case "polygon": return "Polygon";
+		case "multipolygon": return "MultiPolygon";
+		case "geometrycollection": return "GeometryCollection";
+		
+		}
+	}
+
+	function makePDU(bitMode, content, DANumber, SCANumber, encodeSize, messageClass, validPeriod){
+// this function encode 5-bits data content into PDU format with 8-bit encoding 
+// Since the data can only be transfered via "Octet"...later on the 5bit can be decoded from the raw PDU Octet
+
+let SCA, SCA_length, SCA_numberFormat, SCA_convertedNumber;
+let PDUTYPE;
+let RP = "0", VPF = "00", UDHI = "0",  SRR= "0", RD = "0", MTI = "01";
+let MR = "00" ;//default setting
+let DA;
+let PID = "00" ;//default setting
+let DCS= (bitMode == '5')? "04": "00" ;//default setting for 8bit data 04, 7bit 00
+let VP;
+let UDL; 
+// If the TP-User-Data is coded using the default alphabet, the TP-User-Data-Length field gives an integer representation of the number of characters (septets) within the TP-User-Data field to follow. If a TP-User-Data-Header field is present, then the TP-User-Data-Length value is the sum of the number of septets in the TP-User-Data-Header field (including any padding) and the number of septets in the TP-User-Data field which follows.
+
+// If the TP-User-Data is coded using 8-bit data, the TP-User-Data-Length field gives an integer representation of the number of octets within the TP-User-Data field to follow. If a TP-User-Data-Header field is present, then the TP-User-Data-Length value is the sum of the number of octets in the TP-User-Data-Header field and the number of octets in the TP-User-Data field which follows.
+
+// If the TP-User-Data is coded using UCS2 [24] data, the TP-User-Data-Length field gives an integer representation of the number of octets within the TP-User-Data field to follow. If a TP-User-Data-Header field is present, then the TP-User-Data-Length value is the sum of the number of octets in the TP-User-Data-Header field and the number of octets in the TP-User-Data field which follows.
+let UD;
+let UDH; 
+let head;
+let PDU = "";
+let UDH_length = 7;
+let isConcatenated =  false;
+
+let concatenatedPDUs = [];
+let messageSplitNumber;
+let messageSplitCharNumber =  (bitMode == '5')? 212 : 153 ;
+// customized(5-bit) encoding:
+// 1 standard SMS message = up to (1120/5) = 224 characters
+// 2 concatenated SMS messages = up to 428 characters (212 each, (1120-8*6(header)-8(real UDL))/5 = 212.8 )
+
+// GSM(7-bit) encoding:
+// 1 standard SMS message = up to 160 characters
+// 2 concatenated SMS messages = up to 306 characters (153 each, (1120-8*6)/7 = 153.14, if include the padding for UD Header, (1120-6*8-1)/7=153 )
+// 3 concatenated SMS messages = up to 459 characters
+// 4 concatenated SMS messages = up to 612 characters
+// 5 concatenated SMS messages = up to 765 characters
+// etc. (153 x number of individual concatenated SMS messages)
+
+// 8bit encoding:
+// 1 standard SMS message = up to 140 characters
+// 2 concatenated SMS messages = up to 268 characters (134 each)
+
+// UTF-16 encoding:
+// 1 standard SMS message = up to 70 characters
+// 2 concatenated SMS messages = up to 134 characters (67 each)
+// 3 concatenated SMS messages = up to 201 characters
+// 4 concatenated SMS messages = up to 268 characters
+// 5 concatenated SMS messages = up to 335 characters
+// etc. (67 x number of individual concatenated SMS messages)
+if (SCANumber != 0)
+{
+		SCA_numberFormat = "81"; // national
+		if (SCANumber.substr(0,1) == '+')
+		{
+			SCA_numberFormat = "91"; // international
+			SCANumber = SCANumber.substr(1);
+		}
+		else if (SCA.substr(0,1) !='0')
+		{
+			SCA_numberFormat = "91"; // international
+		}
+		if(SCANumber.length%2 != 0)
+		{
+			// add trailing F
+			SCANumber += "F";
+		}	
+
+		SCA_convertedNumber = adjustPhoneAddressToPDUFormat(SCANumber);
+		SCA_length = intToHex(1+SCA_convertedNumber.length/2)
+		SCA = SCA_length + SCA_numberFormat + SCA_convertedNumber
+		
+	}
+	else{
+		SCA = "00"
+	}
+
+	
+	// PDUTYPE consists of 6 different parameters
+	// PDUTYPE(submit)     7         6        5        4    3       2       1  0
+      //                                 RP   UDHI    SRR      VPF     RD       MTI
+      
+      // MTI--> 00 states SMS-DELIVER, 01 states SMS-SUBMIT     
+      // without specific purpose, VPF  can be set to "00", hence VP  not presented 
+      // if UDHI is used(more than one SMSs), 
+      
+      // pdu_type becomes 01000001 -> 41H    else     pdu_type is 00010001 -> 01H
+
+      if(content.length > messageSplitCharNumber)
+      {
+      	PDUTYPE = "41";
+      	// flag that the message needs to be concanated
+      	isConcatenated = true;
+      	// calculate how many SMSs are needed to send the whole content
+      	messageSplitNumber =  Math.ceil(content.length/messageSplitCharNumber);
+
+	// all  Hex format
+	UDH = {
+		UDH_length : "05",
+		IEI : "00", 
+		HEADER_length : "03",
+		// assign random Reference Number to UDH form further multiple split SMS merge 
+		Reference_number : intToHex(Math.floor(Math.random()*255)), 
+		TOTAL_parts: intToHex(messageSplitNumber),
+		PART_number:"01" 
+	} ;  	
+      }//.......for more upto TOTAL_parts < 255
+      else{
+		// all  Hex format
+		UDH =  null;
+		PDUTYPE = "01";
+	}
+
+	let DA_numberFormat = "81"; // national
+	let DA_length;
+	let DA_convertedNumber
+	if (DANumber.substr(0,1) == '+')
+	{
+		DA_numberFormat = "91"; // international
+		DANumber = DANumber.substr(1); //,phoneNumber.length-1);
+	}
+	else if (DANumber.substr(0,1) !='0')
+	{
+		DA_numberFormat = "91"; // international
+	}
+	DA_length = intToHex(DANumber.length);
+
+	if(DANumber.length%2 != 0)
+	{
+		// add trailing F
+		DANumber += "F";
+	}
+	DA_convertedNumber = adjustPhoneAddressToPDUFormat(DANumber); 
+	DA = DA_length + DA_numberFormat + DA_convertedNumber;
+
+	head =  (VPF=="00")? SCA + PDUTYPE + MR + DA + PID + DCS : SCA + PDUTYPE + MR + DA + PID + DCS + VP ;
+	if(bitMode == "5"){
+		let contentObj = JSON.parse(content.toLowerCase());
+		let text = JSON.stringify(objNumberTo5BitChar(contentObj));
+		content = text
+	}
+
+	if(isConcatenated){
+
+
+		for(let i = 0 ; i <  messageSplitNumber ; i++){
+			
+			let leftCharNumber =  content.length - i*messageSplitCharNumber;
+			let currentPDU = '';
+
+			if(leftCharNumber > messageSplitCharNumber)
+			{
+				
+				let currentEncodedUD = ( bitMode == "5")? my5BitEncode(content.substr(i*messageSplitCharNumber, messageSplitCharNumber )) :  my7BitEncode(content.substr(i*messageSplitCharNumber, messageSplitCharNumber ), true);
+								
+				// for bitMode = 5,  length of 6 is added because of the header, for bitMode = 7, 7 is added for header ( ( 6*8 + 1 padding )/7 =  7)
+
+				let UDL =  ( bitMode == "5")? ( 6 + currentEncodedUD.length/2) : ( 7 + messageSplitCharNumber) ,
+
+				currentPDU = head + intToHex(UDL) + UDH.UDH_length+ UDH.IEI + UDH.HEADER_length + UDH.Reference_number + UDH.TOTAL_parts + intToHex(HexToNum(UDH.PART_number) + i ) + currentEncodedUD ;
+
+				concatenatedPDUs.push(
+				{		
+					content:content.substr(i*messageSplitCharNumber, messageSplitCharNumber ),
+					DA:DA,
+					SCA:SCA,
+					DANumber:DANumber,
+					encodeSize:encodeSize,
+					messageClass:messageClass,
+					validPeriod:validPeriod,
+					PDUTYPE:PDUTYPE,
+					MR:MR,
+					DA: DA,
+					PID:PID,
+					DCS:DCS,
+					VP:VP,
+					UDL:  UDL ,
+					UD:UDH.UDH_length+ UDH.IEI + UDH.HEADER_length + UDH.Reference_number + UDH.TOTAL_parts + intToHex(HexToNum(UDH.PART_number) + i ) + currentEncodedUD,
+					UDH:UDH.UDH_length + "  " + UDH.IEI+ "  " + UDH.HEADER_length+ "  " + UDH.Reference_number+ "  " + UDH.TOTAL_parts+ "  " + intToHex(HexToNum(UDH.PART_number) + i ),
+					PDU:PDU,
+					command: ("AT+CMGS=" + (currentPDU.length/2 - SCA_length - 1) + "\n"+ currentPDU)
+
+
+				})
+			}
+			else
+			{
+				
+				let currentEncodedUD = ( bitMode == "5")? my5BitEncode(content.substr(i*messageSplitCharNumber, messageSplitCharNumber )) :  my7BitEncode(content.substr(i*messageSplitCharNumber, messageSplitCharNumber ), true);
+
+				// for bitMode = 5,  length of 6 is added because of the header, for bitMode = 7, 7 is added for header ( ( 6*8 + 1 padding )/7 =  7)
+				let UDL =  ( bitMode == "5")? ( 6 + currentEncodedUD.length/2) : ( 7 + leftCharNumber) ,
+				
+				currentPDU = head +  intToHex(UDL) + UDH.UDH_length+ UDH.IEI + UDH.HEADER_length + UDH.Reference_number + UDH.TOTAL_parts + intToHex(HexToNum(UDH.PART_number) + i ) + currentEncodedUD;
+				
+				concatenatedPDUs.push({		
+					content:content.substr(i*messageSplitCharNumber, leftCharNumber ),
+					DA:DA,
+					SCA:SCA,
+					DANumber:DANumber,
+					encodeSize:encodeSize,
+					messageClass:messageClass,
+					validPeriod:validPeriod,
+					PDUTYPE:PDUTYPE,
+					MR:MR,
+					DA: DA,
+					PID:PID,
+					DCS:DCS,
+					VP:VP,
+					UDL: UDL,
+					UD:UDH.UDH_length+ UDH.IEI + UDH.HEADER_length + UDH.Reference_number + UDH.TOTAL_parts + intToHex(HexToNum(UDH.PART_number) + i ) + currentEncodedUD,
+					UDH:UDH.UDH_length + "  " + UDH.IEI+ "  " + UDH.HEADER_length+ "  " + UDH.Reference_number+ "  " + UDH.TOTAL_parts+ "  " + intToHex(HexToNum(UDH.PART_number) + i ),
+					PDU:currentPDU,
+					command: ("AT+CMGS=" + (currentPDU.length/2 - SCA_length - 1) + "\n"+ currentPDU)
+				})
+			}
+		}
+	}
+	else{
+		UD = (bitMode == "5")? my5BitEncode(content): my7BitEncode(content);
+		UDL = ( bitMode == "5")? ( UD.length/2) : (content.length);
+		PDU = head + intToHex(UDL) + UD;
+	}
+
+
+	DA = DA_length + DA_numberFormat + DA_convertedNumber;
+
+	let obj = {
+		bitMode: bitMode,
+		content:content,
+		DA:DA,
+		SCA:SCA,
+		DANumber:DANumber,
+		encodeSize:encodeSize,
+		messageClass:messageClass,
+		validPeriod:validPeriod,
+		PDUTYPE:PDUTYPE,
+		MR:MR,
+		DA: DA,
+		PID:PID,
+		DCS:DCS,
+		VP:VP,
+		UDL:UDL,
+		UD:UD,
+		UDH:UDH,
+		PDU:PDU,
+		isConcatenated:isConcatenated,
+		messageSplitNumber:messageSplitNumber,
+		messageSplitCharNumber:messageSplitCharNumber,
+		concatenatedPDUs:concatenatedPDUs
+
+	}
+	let AT = "AT+CMGS=" + (PDU.length/2 - SCA_length - 1) ;	
+	if(isConcatenated){
+		let returnText = "";	
+		for(let i = 0 ; i< concatenatedPDUs.length; i++){
+			returnText += concatenatedPDUs[i].command + "\n";
+		}
+		console.log(obj.concatenatedPDUs);
+		return returnText
+	}
+	else{
+		console.log(obj);
+		return AT + "\n" + PDU
+	}
+}
+// encode with preppend bit for UDH and 7bit boundary
+function decodePDUs(bitMode, pduArrayString){
+	let pduArray = pduArrayString.split("\n");
+	let pduObjArray = [];
+	let result = "" ;
+	for(let i = 0; i< pduArray.length; i++){
+		pduObjArray.push(decodeSinglePDU(bitMode, pduArray[i]))
+	}
+	if(bitMode == '5'){
+		for(let i = 0; i < pduObjArray.length; i++){
+			result += pduObjArray[i].decodedUD
+		}
+	}
+
+	console.log(obj5BitCharToNumber(result))
+	//console.log(JSON.parse(obj5BitCharToNumber(result)))
+
+	return JSON.stringify(obj5BitCharToNumber(result))
+}
+
+function decodeSinglePDU(bitMode, pdu){
+
+
+	let SCA, SCA_length, SCA_numberFormat, SCA_number;
+	let PDUTYPE;
+	let RP = "0", UDHI = "0",  SRI= "0", MMS = "0", MTI = "00";
+	let OA;
+	let OAFormat;
+	let OANumber;
+	let PID  ;
+	let DCS;
+	let SCTS;
+	let UDL; 
+	let UD;
+	let UDH; 
+	let UDWithoutHeader;
+	let content;
+	let currentDecodingPosition = 0;
+	let isConcatenated;
+	let messageSplitNumber;
+
+	SCA_length = HexToNum(pdu.substr(currentDecodingPosition, 2));
+	
+	currentDecodingPosition+=2;
+	
+	if(SCA_length != 0){
+		SCA_numberFormat = pdu.substr(currentDecodingPosition, 2);
+		currentDecodingPosition+=2;
+		SCA_mumber = pdu.substr(currentDecodingPosition, (SCA_length-1)*2);
+		SCA_mumber  = adjustPhoneAddressToPDUFormat(SCA_mumber )
+		currentDecodingPosition+= (SCA_length-1)*2;
+	}
+
+	PDUTYPE = pdu.substr(currentDecodingPosition, 2);
+	let PDUTYPE_bit = (intToBin(HexToNum(PDUTYPE), 8) );
+	RP = PDUTYPE_bit[0];
+	UDHI = PDUTYPE_bit[1];
+	SRI = PDUTYPE_bit[2];
+	MMS = PDUTYPE_bit[5];
+	MTI = PDUTYPE_bit[6] + ""+ PDUTYPE_bit[7];
+
+	if(MTI != "00"){
+		console.log("Something went wrong with the decode process, and the source data is not correct, as SMS deliver format MTI should always be 00")
+	}
+	currentDecodingPosition+=2;
+	OANumber = HexToNum(pdu.substr(currentDecodingPosition, 2));
+	currentDecodingPosition+=2;
+
+	if (OANumber%2==0)
+	{	
+		OAFormat = pdu.substr(currentDecodingPosition, 2);
+		currentDecodingPosition+=2;
+		OA	= pdu.substr(currentDecodingPosition, OANumber);
+		currentDecodingPosition+=OANumber;
+	}
+	else
+	{
+		OAFormat = pdu.substr(currentDecodingPosition, 2);
+		currentDecodingPosition+=2;
+		
+		OA	= pdu.substr(currentDecodingPosition, (OANumber+1) );
+		currentDecodingPosition+=(OANumber+1);
+	}
+	OA = adjustPhoneAddressToPDUFormat(OA);
+	PID = pdu.substr(currentDecodingPosition, 2);
+	currentDecodingPosition+=2;
+	DCS = pdu.substr(currentDecodingPosition, 2);
+	currentDecodingPosition+=2;
+	SCTS = pdu.substr(currentDecodingPosition, 7*2);
+	currentDecodingPosition+=7*2;
+	UDL = pdu.substr(currentDecodingPosition, 2);
+	currentDecodingPosition+=2;
+	UD = pdu.substr(currentDecodingPosition);
+	UDWithoutHeader = pdu.substr(currentDecodingPosition);
+	if(UDHI=="1")//meaing has UD header
+	{
+
+		UDH = {
+			UDH_length : pdu.substr(currentDecodingPosition, 2),
+			IEI : pdu.substr(currentDecodingPosition + 2, 2), 
+			HEADER_length :pdu.substr(currentDecodingPosition + 4, 2),
+			Reference_number : pdu.substr(currentDecodingPosition + 6, 2),
+			TOTAL_parts: pdu.substr(currentDecodingPosition + 8 ,2),
+			PART_number:pdu.substr(currentDecodingPosition + 10, 2)
+		} ;
+		currentDecodingPosition+= 6*2;
+		UDWithoutHeader = pdu.substr(currentDecodingPosition);
+	}
+
+	let obj = {
+		content:content,
+		OA:OA,
+		SCA:SCA,
+		SCA_length:SCA_length,
+		SCA_numberFormat:SCA_numberFormat,
+		SCA_mumber:SCA_mumber,
+		OANumber:OANumber,
+		PDUTYPE:PDUTYPE,
+		PID:PID,
+		DCS:DCS,
+		UDL:UDL,
+		UD:UD,
+		UDH:UDH,
+		RP:RP,
+		MMS: MMS,
+		UDHI:UDHI,
+		isConcatenated:!!UDHI,
+		UDWithoutHeader:UDWithoutHeader,
+		decodedUD: ( bitMode == "5" )? my5BitDecode(UDWithoutHeader) : my7BitDecode(UDWithoutHeader, !!UDHI ),
+	
+	}
+	return obj;
+}
+function my5BitEncode(text){
+	//console.log(text, contentObj, content, content.toLowerCase())
+	let reversedText = text.split('').reverse().join('');
+	let realUDL = text.length;
+	for(let i = 0; i<reversedText.length; i++){
+		if(fivebitdefault.indexOf(reversedText[i]) == -1){
+			alert(`error:  ${reversedText[i]}  does not match the 5 bits char table : ${fivebitdefault} `);
+			return
+		}
+	}
+	let reversedTextInBits = "";
+	let paddingBits =8 - (text.length * 5)% 8;
+	if(paddingBits == 8){
+		paddingBits = 0;
+	}
+
+	let paddingBitsText = '';
+	for(let i = 0 ; i<text.length; i ++){
+		//console.log(text[i] , intToBin(fivebitdefault.indexOf(text[i]), 5  )   )
+		reversedTextInBits = intToBin(fivebitdefault.indexOf(text[i]), 5) + reversedTextInBits
+	}
+	for(let i = 0 ; i < paddingBits ; i ++){
+		paddingBitsText +='0';
+	}
+	let t = (paddingBitsText + reversedTextInBits);
+
+	let tt = ToHex(realUDL);
+	for(let i = 0 ;i< t.length/8 ; i ++){
+		console.log(ToHex(binToInt(t.substr(t.length  - (i+1)*8, 8))), t.substr(t.length  - (i+1)*8, 8)) ;
+		tt = tt + ToHex(binToInt(t.substr(t.length  - (i+1)*8, 8))) 
+	}
+	console.log("text length: ", text.length, "realUDL: ", ToHex(realUDL), " , paddingBits:  ", paddingBits, "tt: ", tt)
+	return tt
+
+}
+function my5BitDecode(hex){
+	let realUDL = HexToNum(hex.substr(0,2));
+	hex = hex.substr(2);
+	let text="";
+	for(let i = 0 ;i< hex.length/2 ; i++){
+
+		text = intToBin(HexToNum(hex.substr(i*2,2)), 8)+ text
+	}
+	let reversedText = text.split('').reverse().join('');
+
+	let decodedText="";
+	for(let i = 1 ; i < realUDL+1 ; i ++){
+		decodedText += fivebitdefault[binToInt(text.substr(text.length - i*5, 5) )]
+	}
+	return decodedText
+}
+function my7BitEncode(text, isWithHeader){
+	
+	let prependBitNumber = 1 // header contains 6 hex, which is 48 bit, to fill the 7 bit boundary, 1 bit should be added
+	let prependBits = "0";
+	let textLength = text.length;
+	let reversedText = text.split('').reverse().join('');
+	let reversedTextInBits = "";
+	//let paddingBits = isWithHeader? 8 -  (textLength * 7 + prependBitNumber )% 8: 8  -  (textLength * 7)% 8;
+	let paddingBits =  8  -  (textLength * 7)% 8;
+
+	if(paddingBits == 8){
+		paddingBits = 0;
+	}
+	let paddingBitsText = '';
+	for(let i = 0 ; i <  textLength; i ++){
+
+		//console.log(text[i] , intToBin(sevenbitdefault.indexOf(text[i]), 7  )   )
+		reversedTextInBits = intToBin(sevenbitdefault.indexOf(text[i]), 7) + reversedTextInBits
+	}
+	for(let i = 0 ; i < paddingBits ; i ++){
+		paddingBitsText +='0';
+	}
+
+	// Since everything is reversed now, the paddingBits for UD is put at the bieginning, while the prependBits is put to the end
+	// whole UD = UDH + UDH_padding + UD + UD_padding
+	// this function deals with UD without UDH part 
+	// hence the order is UD_padding + UD + UDH_padding  
+	let textInBits = (paddingBitsText + reversedTextInBits + prependBits);
+	//let textInBits = (paddingBitsText + reversedTextInBits );
+	let textBackToHex = '';
+	for(let i = 0 ;i< textInBits.length/8 ; i ++){
+
+		textBackToHex = textBackToHex + ToHex(binToInt(textInBits.substr(textInBits.length  - (i+1)*8, 8))) 
+	}
+	let record = {
+		reversedText:reversedText,
+		reversedTextInBits:reversedTextInBits,
+		paddingBits:paddingBits,
+		prependBitNumber:prependBitNumber,
+		textInBits:textInBits,
+		textLength:textLength,
+		textBackToHex:textBackToHex
+	}
+	return textBackToHex
+
+}
+// function my7BitDecode(hex, hasHeader, UDL ){
+// 	let prependBitNumber = 1;
+// 	let text="";
+// 	for(let i = 0 ;i< hex.length/2 ; i++){
+
+// 		text = intToBin(HexToNum(hex.substr(i*2,2)), 8)+ text
+// 		//console.log(hex.substr(i*2,2),  intToBin(HexToNum(hex.substr(i*2,2)), 8) )
+// 	}
+// 	text = hasHeader? text.substr(0, text.length - prependBitNumber) : text;
+	
+// 	let reversedText = text.split('').reverse().join('');
+// 	let textLength = Math.floor(reversedText.length/7);
+// 	let decodedText="";
+	
+// 	//console.log(text)
+	
+// 	for(let i = 1 ; i < textLength + 1 ; i ++){
+
+// 		decodedText += sevenbitdefault[binToInt(text.substr(text.length - i*7, 7) )]
+// 		console.log(text.substr(text.length - i*7, 7),  binToInt(text.substr(text.length - i*7, 7) ), sevenbitdefault[binToInt(text.substr(text.length - i*7, 7) )])
+// 	}
+
+// 	return decodedText
+// }
+
+</script>
+</head>
+<body>
+	<center>
+		<table> <!-- width=600>-->
+			<tr>
+				<td>
+					<form name="pduToStringForm">
+						<table cellspacing="0" cellpadding="10" border="0">
+							<tbody>
+
+								<tr>
+									<td  ><!-- width="200">-->
+										<table border="0" cellpadding="0" cellspacing="8">
+											<tbody>
+												<tr>
+													<td>SCA (service center address)</td>
+													<td><input type="text" name="smscNumber" size="15" value="+491722270333"></td>
+												</tr>
+												<tr>
+													<td>DA(destination address)</td>
+													<td><input type="text" name="phoneNumber" size="15" value="+4915732429489"></td>
+												<!-- 	<td><input type="text" name="phoneNumber" size="15" value="+4915223175898"></td> -->
+												</tr>
+											</tbody>
+										</table>
+									</br></br>
+									<textarea name="smsText" 
+									rows="6" 
+									
+									cols="50">http://maps.google.com/?q=52.5119789,13.3256597&GeoSMS
+We are having an accident here, more than 20 people are injured, could you send some people to help?
+</textarea> 
+								</br>
+								<input onclick="smsText2.value=makePDU('7', document.pduToStringForm.smsText.value,document.pduToStringForm.phoneNumber.value,document.pduToStringForm.smscNumber.value) " type="button" size="11" value="ToPDU >" name="stringButton">
+							</br>
+							</br>
+							<textarea name="smsText5Bit" 
+							rows="6" 
+							
+							cols="50">{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[52.50695,13.33619],[52.50655,13.33689],[52.50755,13.33719]]]},"properties":{"message":"This area is now blocked because of the fire alarm, please keep away till the alram is off"}}</textarea> 
+						</br>
+						<input onclick="smsText2.value= makePDU('5', document.pduToStringForm.smsText5Bit.value,document.pduToStringForm.phoneNumber.value,document.pduToStringForm.smscNumber.value) " type="button" size="11" value="To5BitPDU >" name="stringButton">
+					</td>
+					<td  align="center"><!-- width="200">-->
+						<br /><br /><br /><textarea name="smsText2" rows="20" wrap="virtual" cols="50">PDU Results
+					</textarea> 
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<table>
+		<tbody>
+	<tr>
+					<td ><!-- width="250">-->
+				<br /><br /><textarea name="smsOut" rows="6" wrap="virtual" cols="100">please enter pdu SMSs</textarea>
+				<br />
+				<input onclick="decodePDU.value=decodePDUs( '5', document.pduToStringForm.smsOut.value,document.pduToStringForm.phoneNumber.value) " type="button" size="11" value="decode5BitsPDU >" name="stringButton">
+<!-- 						<input onclick="decodePDU.value=decodePDUs('7', document.pduToStringForm.smsOut.value,document.pduToStringForm.phoneNumber.value) " type="button" size="11" value="decode7BitsPDU >" name="stringButton"> -->
+	</br>
+							</br>	
+						<textarea name="decodePDU" rows="6" wrap="virtual" cols="100">decodePDU Results
+					</textarea> 
+				</td>
+
+				</tr>
+			</tbody>
+	</table>
+</form>
+</td>
+</tr>
+</table>
+</center>
+</body>
+</html>
